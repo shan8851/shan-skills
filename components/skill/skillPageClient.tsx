@@ -341,7 +341,10 @@ export const SkillPageClient = ({ skill }: SkillPageClientProps) => {
                     row.node.type === "file" && row.node.fullPath === activeFileNode.fullPath;
 
                   return (
-                    <li key={row.node.id}>
+                    <li
+                      key={row.node.id}
+                      ref={isSelected ? (element) => { element?.scrollIntoView({ block: "nearest", behavior: "smooth" }); } : undefined}
+                    >
                       <button
                         className={`skill-row flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm ${
                           isSelected

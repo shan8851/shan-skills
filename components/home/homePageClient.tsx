@@ -246,7 +246,10 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
                     const isSelected = index === selectedIndex;
 
                     return (
-                      <li key={skill.slug}>
+                      <li
+                        key={skill.slug}
+                        ref={isSelected ? (element) => { element?.scrollIntoView({ block: "nearest", behavior: "smooth" }); } : undefined}
+                      >
                         <button
                           className={`skill-row grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-[var(--ui-border-muted)] px-3 py-3 text-left last:border-b-0 ${
                             isSelected
@@ -255,9 +258,6 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
                           }`}
                           onClick={() => {
                             router.push(`/skills/${skill.slug}`);
-                          }}
-                          onMouseEnter={() => {
-                            setSelectedSkillSlug(skill.slug);
                           }}
                           type="button"
                         >

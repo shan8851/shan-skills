@@ -70,8 +70,8 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
         display: "flex",
         padding: "44px",
         background:
-          "radial-gradient(circle at 15% 0%, rgba(84, 255, 140, 0.18), transparent 40%), linear-gradient(160deg, #060d09 0%, #08140d 100%)",
-        color: "#d5f5dc",
+          "radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.04), transparent 40%), linear-gradient(160deg, #050505 0%, #0a0a0a 100%)",
+        color: "#e0e0e0",
         fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace",
       }}
     >
@@ -79,8 +79,8 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
         style={{
           width: "100%",
           height: "100%",
-          border: "1px solid #1f3b2a",
-          background: "#0b1811",
+          border: "1px solid #2a2a2a",
+          background: "#0d0d0d",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -92,7 +92,7 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
             display: "flex",
             justifyContent: "space-between",
             fontSize: 22,
-            color: "#8cb498",
+            color: "#707070",
             letterSpacing: "0.08em",
           }}
         >
@@ -112,7 +112,7 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
         >
           <div
             style={{
-              color: "#8cb498",
+              color: "#707070",
               fontSize: 24,
               letterSpacing: "0.08em",
             }}
@@ -122,13 +122,13 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
 
           <div
             style={{
-              color: "#8fffaf",
+              color: "#ffffff",
               fontFamily: "VT323",
               fontSize: titleFontSize,
               lineHeight: 0.8,
               letterSpacing: "2px",
               whiteSpace: "normal",
-              textShadow: "4px 4px 0 #1f3b2a",
+              textShadow: "4px 4px 0 #1a1a1a",
               maxWidth: "100%",
             }}
           >
@@ -138,13 +138,13 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
           <div
             style={{
               width: "100%",
-              borderTop: "1px solid #1f3b2a",
+              borderTop: "1px solid #2a2a2a",
             }}
           />
 
           <div
             style={{
-              color: "#d5f5dc",
+              color: "#e0e0e0",
               fontSize: 43,
               lineHeight: 1.08,
               maxWidth: "96%",
@@ -162,9 +162,9 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
           >
             <div
               style={{
-                border: "1px solid #1f3b2a",
-                background: "#102118",
-                color: "#8fffaf",
+                border: "1px solid #2a2a2a",
+                background: "#141414",
+                color: "#ffffff",
                 padding: "8px 12px",
                 fontSize: 20,
                 letterSpacing: "0.05em",
@@ -175,9 +175,9 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
 
             <div
               style={{
-                border: "1px solid #1f3b2a",
-                background: "#102118",
-                color: "#8cb498",
+                border: "1px solid #2a2a2a",
+                background: "#141414",
+                color: "#707070",
                 padding: "8px 12px",
                 fontSize: 20,
                 letterSpacing: "0.05em",
@@ -193,8 +193,8 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
             display: "flex",
             justifyContent: "space-between",
             fontSize: 24,
-            color: "#8cb498",
-            borderTop: "1px solid #1f3b2a",
+            color: "#707070",
+            borderTop: "1px solid #2a2a2a",
             paddingTop: "14px",
           }}
         >

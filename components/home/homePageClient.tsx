@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { KeyboardHelpModal } from "@/components/keyboard/keyboardHelpModal";
 import { KeyboardHints } from "@/components/keyboard/keyboardHints";
 import { SiteFooter } from "@/components/site/siteFooter";
+import { TerminalPanel } from "@/components/ui/terminalPanel";
 import { isTypingElement } from "@/lib/keyboard/keyboardGuards";
 import type { KeyboardShortcut } from "@/lib/keyboard/shortcutTypes";
 import type { Skill } from "@/lib/skills/skillsSchema";
@@ -202,93 +203,93 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
   return (
     <div className="flex min-h-screen flex-col bg-[var(--terminal-bg)] text-[var(--text-main)]">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 md:px-6">
-        <section className="rounded-lg border border-[var(--ui-border)] bg-[var(--panel-bg)] p-4 shadow-[0_0_30px_rgba(0,0,0,0.35)] md:p-6">
-          <pre className="overflow-x-auto whitespace-pre font-[var(--font-terminal-mono)] text-[8px] leading-[1.08] text-[var(--accent)] sm:text-[9px] md:hidden">
-            {asciiBannerMobile}
-          </pre>
-          <pre className="hidden overflow-x-auto whitespace-pre font-[var(--font-terminal-mono)] text-[9px] leading-[1.08] text-[var(--accent)] md:block lg:text-[10px]">
-            {asciiBannerDesktop}
-          </pre>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--text-dim)]">
-            A terminal-style catalog of the custom skills I use with coding agents.
-            Browse, search, and inspect every skill reference file with keyboard-first controls.
-          </p>
-        </section>
-
-        <section className="rounded-lg border border-[var(--ui-border)] bg-[var(--panel-bg)] p-4 md:p-6">
-          <label
-            className="mb-2 block font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]"
-            htmlFor="skills-search"
-          >
-            Search Skills
-          </label>
-          <input
-            className="w-full rounded-md border border-[var(--ui-border)] bg-black/30 px-3 py-2 font-[var(--font-terminal-mono)] text-sm text-[var(--text-main)] outline-none ring-0 placeholder:text-[var(--text-dim)] focus:border-[var(--accent)]"
-            id="skills-search"
-            onChange={(event) => {
-              setSearchQuery(event.target.value);
-            }}
-            placeholder="Type a skill, slug, or description..."
-            ref={searchInputRef}
-            type="text"
-            value={searchQuery}
-          />
-
-          <KeyboardHints className="mt-3" shortcuts={homeShortcuts} />
-
-          <div className="mt-4 overflow-hidden rounded-md border border-[var(--ui-border)]">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] border-b border-[var(--ui-border)] bg-[var(--panel-bg-muted)] px-3 py-2 font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
-              <span>Skill</span>
-              <span>Slug</span>
-            </div>
-
-            {filteredSkills.length > 0 ? (
-              <ul aria-label="Skills list">
-                {filteredSkills.map((skill, index) => {
-                  const isSelected = index === selectedIndex;
-
-                  return (
-                    <li key={skill.slug}>
-                      <button
-                        className={`grid w-full grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-[var(--ui-border-muted)] px-3 py-3 text-left transition-colors last:border-b-0 ${
-                          isSelected
-                            ? "bg-[var(--selection-bg)] text-[var(--accent-bright)]"
-                            : "bg-transparent text-[var(--text-main)] hover:bg-[var(--panel-bg-muted)]"
-                        }`}
-                        onClick={() => {
-                          router.push(`/skills/${skill.slug}`);
-                        }}
-                        onMouseEnter={() => {
-                          setSelectedSkillSlug(skill.slug);
-                        }}
-                        type="button"
-                      >
-                        <div className="min-w-0">
-                          <p className="truncate font-display text-sm uppercase tracking-[0.06em]">
-                            {skill.name}
-                          </p>
-                          <p className="mt-1 line-clamp-2 text-xs text-[var(--text-dim)]">
-                            {skill.description}
-                          </p>
-                        </div>
-                        <span className="self-start rounded border border-[var(--ui-border)] bg-black/25 px-2 py-1 font-display text-xs tracking-wide text-[var(--text-dim)]">
-                          {skill.slug}
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <div className="px-3 py-8 text-sm text-[var(--text-dim)]">
-                No skills matched your query.
-              </div>
-            )}
+        <TerminalPanel className="p-4 md:p-6">
+          <div className="terminal-flicker-in">
+            <pre className="glow-heading overflow-x-auto whitespace-pre font-[var(--font-terminal-mono)] text-[8px] leading-[1.08] text-[var(--accent)] sm:text-[9px] md:hidden">
+              {asciiBannerMobile}
+            </pre>
+            <pre className="glow-heading hidden overflow-x-auto whitespace-pre font-[var(--font-terminal-mono)] text-[9px] leading-[1.08] text-[var(--accent)] md:block lg:text-[10px]">
+              {asciiBannerDesktop}
+            </pre>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--text-dim)]">
+              A terminal-style catalog of the custom skills I use with coding agents.
+              Browse, search, and inspect every skill reference file with keyboard-first controls.
+            </p>
           </div>
-        </section>
+        </TerminalPanel>
+
+        <TerminalPanel className="p-4 md:p-6" headerLabel="Search Skills">
+          <div className="terminal-fade-in" style={{ animationDelay: "150ms" }}>
+            <input
+              className="terminal-input w-full border border-[var(--ui-border)] bg-black/30 px-3 py-2 font-[var(--font-terminal-mono)] text-sm text-[var(--text-main)] outline-none ring-0 placeholder:text-[var(--text-dim)] focus:border-[var(--accent)]"
+              id="skills-search"
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+              }}
+              placeholder="Type a skill, slug, or description..."
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+            />
+
+            <KeyboardHints className="mt-3" shortcuts={homeShortcuts} />
+
+            <div className="mt-4 overflow-hidden border border-[var(--ui-border)]">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] border-b border-[var(--ui-border)] bg-[var(--panel-bg-muted)] px-3 py-2 font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
+                <span>Skill</span>
+                <span>Slug</span>
+              </div>
+
+              {filteredSkills.length > 0 ? (
+                <ul aria-label="Skills list">
+                  {filteredSkills.map((skill, index) => {
+                    const isSelected = index === selectedIndex;
+
+                    return (
+                      <li key={skill.slug}>
+                        <button
+                          className={`skill-row grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-[var(--ui-border-muted)] px-3 py-3 text-left last:border-b-0 ${
+                            isSelected
+                              ? "skill-row-selected bg-[var(--selection-bg)] text-[var(--accent-bright)]"
+                              : "bg-transparent text-[var(--text-main)] hover:bg-[var(--panel-bg-muted)]"
+                          }`}
+                          onClick={() => {
+                            router.push(`/skills/${skill.slug}`);
+                          }}
+                          onMouseEnter={() => {
+                            setSelectedSkillSlug(skill.slug);
+                          }}
+                          type="button"
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate font-display text-sm uppercase tracking-[0.06em]">
+                              {skill.name}
+                            </p>
+                            <p className="mt-1 line-clamp-2 text-xs text-[var(--text-dim)]">
+                              {skill.description}
+                            </p>
+                          </div>
+                          <span className="self-start border border-[var(--ui-border)] bg-black/25 px-2 py-1 font-display text-xs tracking-wide text-[var(--text-dim)]">
+                            {skill.slug}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <div className="px-3 py-8 text-sm text-[var(--text-dim)]">
+                  No skills matched your query.
+                </div>
+              )}
+            </div>
+          </div>
+        </TerminalPanel>
       </main>
 
-      <SiteFooter />
+      <div className="terminal-fade-in" style={{ animationDelay: "300ms" }}>
+        <SiteFooter />
+      </div>
 
       {isKeyboardHelpOpen ? (
         <KeyboardHelpModal

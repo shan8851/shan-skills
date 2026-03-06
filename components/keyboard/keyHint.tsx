@@ -9,7 +9,7 @@ type KeyHintProps = {
 export const KeyHint = ({ shortcut }: KeyHintProps) => {
   return (
     <div
-      className={`flex items-center gap-2 px-1 py-1 text-xs ${
+      className={`glow-hover flex items-center gap-2 px-1 py-1 text-xs ${
         shortcut.enabled ? "text-[var(--text-main)]" : "text-[var(--text-dim)]"
       }`}
     >

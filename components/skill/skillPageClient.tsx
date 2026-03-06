@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -8,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import { KeyboardHelpModal } from "@/components/keyboard/keyboardHelpModal";
 import { KeyboardHints } from "@/components/keyboard/keyboardHints";
 import { SiteFooter } from "@/components/site/siteFooter";
+import { TerminalPanel } from "@/components/ui/terminalPanel";
 import { isTypingElement } from "@/lib/keyboard/keyboardGuards";
 import type { KeyboardShortcut } from "@/lib/keyboard/shortcutTypes";
 import {
@@ -49,6 +51,7 @@ const getFirstFileNode = (skill: Skill): SkillExplorerFileNode => {
 };
 
 export const SkillPageClient = ({ skill }: SkillPageClientProps) => {
+  const router = useRouter();
   const explorerNodes = useMemo(() => buildSkillExplorerNodes(skill), [skill]);
 
   const [collapsedDirectoryPaths, setCollapsedDirectoryPaths] = useState<Set<string>>(new Set());
@@ -118,6 +121,12 @@ export const SkillPageClient = ({ skill }: SkillPageClientProps) => {
         keys: ["C"],
         description: "Copy active file",
         enabled: activeFileNode !== undefined,
+      },
+      {
+        id: "back-to-list",
+        keys: ["Backspace"],
+        description: "Back to list",
+        enabled: true,
       },
       {
         id: "open-help",
@@ -204,6 +213,12 @@ export const SkillPageClient = ({ skill }: SkillPageClientProps) => {
         return;
       }
 
+      if (!isTyping && event.key === "Backspace") {
+        event.preventDefault();
+        router.push("/");
+        return;
+      }
+
       if (isTyping || visibleRows.length === 0) {
         return;
       }
@@ -273,6 +288,7 @@ export const SkillPageClient = ({ skill }: SkillPageClientProps) => {
     activeFileNode,
     collapsedDirectoryPaths,
     isKeyboardHelpOpen,
+    router,
     selectedRow,
     selectedRowIndex,
     visibleRows,
@@ -294,147 +310,152 @@ export const SkillPageClient = ({ skill }: SkillPageClientProps) => {
   return (
     <div className="flex min-h-screen flex-col bg-[var(--terminal-bg)] text-[var(--text-main)]">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 md:px-6">
-        <header className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--ui-border)] bg-[var(--panel-bg)] px-4 py-3">
-          <div>
+        <TerminalPanel className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <div className="terminal-fade-in">
             <p className="font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
               Skill
             </p>
-            <h1 className="font-display text-lg uppercase tracking-[0.08em] text-[var(--accent-bright)]">
+            <h1 className="glow-accent font-display text-lg uppercase tracking-[0.08em] text-[var(--accent-bright)]">
               {skill.name}
             </h1>
           </div>
           <Link
-            className="rounded border border-[var(--ui-border)] px-3 py-1 text-xs text-[var(--text-main)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-bright)]"
+            className="glow-hover border border-[var(--ui-border)] px-3 py-1 text-xs text-[var(--text-main)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-bright)]"
             href="/"
           >
             Back to list
           </Link>
-        </header>
+        </TerminalPanel>
 
-        <KeyboardHints shortcuts={skillShortcuts} />
+        <div className="terminal-fade-in" style={{ animationDelay: "100ms" }}>
+          <KeyboardHints shortcuts={skillShortcuts} />
+        </div>
 
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(260px,340px)_minmax(0,1fr)]">
-          <div className="rounded-lg border border-[var(--ui-border)] bg-[var(--panel-bg)]">
-            <div className="border-b border-[var(--ui-border)] px-3 py-2 font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
-              Files
-            </div>
-            <ul className="p-2">
-              {visibleRows.map((row, index) => {
-                const isSelected = index === selectedRowIndex;
-                const isActiveFile =
-                  row.node.type === "file" && row.node.fullPath === activeFileNode.fullPath;
+          <div className="terminal-fade-in" style={{ animationDelay: "180ms" }}>
+            <TerminalPanel headerLabel="Files">
+              <ul className="p-2">
+                {visibleRows.map((row, index) => {
+                  const isSelected = index === selectedRowIndex;
+                  const isActiveFile =
+                    row.node.type === "file" && row.node.fullPath === activeFileNode.fullPath;
 
-                return (
-                  <li key={row.node.id}>
-                    <button
-                      className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors ${
-                        isSelected
-                          ? "bg-[var(--selection-bg)] text-[var(--accent-bright)]"
-                          : "text-[var(--text-main)] hover:bg-[var(--panel-bg-muted)]"
-                      }`}
-                      onClick={() => {
-                        setSelectedNodePath(row.node.fullPath);
+                  return (
+                    <li key={row.node.id}>
+                      <button
+                        className={`skill-row flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm ${
+                          isSelected
+                            ? "skill-row-selected bg-[var(--selection-bg)] text-[var(--accent-bright)]"
+                            : "text-[var(--text-main)] hover:bg-[var(--panel-bg-muted)]"
+                        }`}
+                        onClick={() => {
+                          setSelectedNodePath(row.node.fullPath);
 
-                        if (row.node.type === "file") {
-                          setActiveFilePath(row.node.fullPath);
-                        }
-                      }}
-                      style={{ paddingLeft: `${row.depth * 16 + 8}px` }}
-                      type="button"
-                    >
-                      <span className="w-4 text-center text-[var(--text-dim)]">
-                        {row.node.type === "directory"
-                          ? collapsedDirectoryPaths.has(row.node.fullPath)
-                            ? ">"
-                            : "v"
-                          : "-"}
-                      </span>
-                      <span className="truncate">{row.node.displayName}</span>
-                      {isActiveFile ? (
-                        <span className="ml-auto text-[10px] uppercase tracking-wide text-[var(--accent)]">
-                          active
+                          if (row.node.type === "file") {
+                            setActiveFilePath(row.node.fullPath);
+                          }
+                        }}
+                        style={{ paddingLeft: `${row.depth * 16 + 8}px` }}
+                        type="button"
+                      >
+                        <span className="w-4 text-center text-[var(--text-dim)]">
+                          {row.node.type === "directory"
+                            ? collapsedDirectoryPaths.has(row.node.fullPath)
+                              ? ">"
+                              : "v"
+                            : "-"}
                         </span>
-                      ) : null}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+                        <span className="truncate">{row.node.displayName}</span>
+                        {isActiveFile ? (
+                          <span className="ml-auto text-[10px] uppercase tracking-wide text-[var(--accent)]">
+                            active
+                          </span>
+                        ) : null}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </TerminalPanel>
           </div>
 
-          <div className="rounded-lg border border-[var(--ui-border)] bg-[var(--panel-bg)]">
-            <div className="flex items-center justify-between border-b border-[var(--ui-border)] px-3 py-2">
-              <div>
-                <p className="font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
-                  Preview
-                </p>
-                <p className="mt-0.5 font-[var(--font-terminal-mono)] text-xs text-[var(--text-main)]">
-                  {activeFileNode.fullPath}
-                </p>
+          <div className="terminal-fade-in" style={{ animationDelay: "260ms" }}>
+            <TerminalPanel headerLabel="Preview">
+              <div className="flex items-center justify-between border-b border-[var(--ui-border)] px-3 py-2">
+                <div>
+                  <p className="font-display text-xs uppercase tracking-[0.15em] text-[var(--text-dim)]">
+                    {activeFileNode.title}
+                  </p>
+                  <p className="mt-0.5 font-[var(--font-terminal-mono)] text-xs text-[var(--text-main)]">
+                    {activeFileNode.fullPath}
+                  </p>
+                </div>
+                <button
+                  className="glow-hover border border-[var(--ui-border)] px-3 py-1 text-xs text-[var(--text-main)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-bright)]"
+                  onClick={() => {
+                    void handleFileCopy();
+                  }}
+                  type="button"
+                >
+                  {copiedFilePath === activeFileNode.fullPath ? "Copied" : "Copy Raw"}
+                </button>
               </div>
-              <button
-                className="rounded border border-[var(--ui-border)] px-3 py-1 text-xs text-[var(--text-main)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-bright)]"
-                onClick={() => {
-                  void handleFileCopy();
-                }}
-                type="button"
-              >
-                {copiedFilePath === activeFileNode.fullPath ? "Copied" : "Copy Raw"}
-              </button>
-            </div>
-            <div className="prose prose-invert max-w-none px-4 py-4 text-sm leading-relaxed text-[var(--text-main)]">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: ({ children, href }) => {
-                    return (
-                      <a
-                        className="text-[var(--accent)] underline decoration-[var(--accent)]/50 underline-offset-4"
-                        href={href}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        {children}
-                      </a>
-                    );
-                  },
-                  code: ({ children }) => {
-                    return (
-                      <code className="rounded bg-black/40 px-1 py-0.5 text-[var(--accent)]">
-                        {children}
-                      </code>
-                    );
-                  },
-                  h1: ({ children }) => {
-                    return (
-                      <h2 className="mt-3 font-display text-xl uppercase tracking-[0.08em] text-[var(--accent-bright)]">
-                        {children}
-                      </h2>
-                    );
-                  },
-                  h2: ({ children }) => {
-                    return (
-                      <h3 className="mt-4 font-display text-lg uppercase tracking-[0.08em] text-[var(--accent-bright)]">
-                        {children}
-                      </h3>
-                    );
-                  },
-                  li: ({ children }) => {
-                    return <li className="my-1">{children}</li>;
-                  },
-                  p: ({ children }) => {
-                    return <p className="my-2">{children}</p>;
-                  },
-                }}
-              >
-                {activeFileNode.markdown}
-              </ReactMarkdown>
-            </div>
+              <div className="prose prose-invert max-w-none px-4 py-4 text-sm leading-relaxed text-[var(--text-main)]">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ children, href }) => {
+                      return (
+                        <a
+                          className="glow-hover text-[var(--accent)] underline decoration-[var(--accent)]/50 underline-offset-4"
+                          href={href}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          {children}
+                        </a>
+                      );
+                    },
+                    code: ({ children }) => {
+                      return (
+                        <code className="bg-black/40 px-1 py-0.5 text-[var(--accent)]">
+                          {children}
+                        </code>
+                      );
+                    },
+                    h1: ({ children }) => {
+                      return (
+                        <h2 className="glow-heading-sm mt-3 font-display text-xl uppercase tracking-[0.08em] text-[var(--accent-bright)]">
+                          {children}
+                        </h2>
+                      );
+                    },
+                    h2: ({ children }) => {
+                      return (
+                        <h3 className="glow-heading-sm mt-4 font-display text-lg uppercase tracking-[0.08em] text-[var(--accent-bright)]">
+                          {children}
+                        </h3>
+                      );
+                    },
+                    li: ({ children }) => {
+                      return <li className="my-1">{children}</li>;
+                    },
+                    p: ({ children }) => {
+                      return <p className="my-2">{children}</p>;
+                    },
+                  }}
+                >
+                  {activeFileNode.markdown}
+                </ReactMarkdown>
+              </div>
+            </TerminalPanel>
           </div>
         </section>
       </main>
 
-      <SiteFooter />
+      <div className="terminal-fade-in" style={{ animationDelay: "340ms" }}>
+        <SiteFooter />
+      </div>
 
       {isKeyboardHelpOpen ? (
         <KeyboardHelpModal

@@ -7,7 +7,7 @@ export const SiteFooter = () => {
         <p>
           Spotted an issue or think I should add skills?{" "}
           <Link
-            className="text-[var(--accent)] underline decoration-[var(--accent)]/40 underline-offset-4 transition-colors hover:text-[var(--accent-bright)]"
+            className="glow-hover text-[var(--accent)] underline decoration-[var(--accent)]/40 underline-offset-4 transition-colors hover:text-[var(--accent-bright)]"
             href="https://github.com/shan8851/agent-skills/pulls"
             rel="noopener noreferrer"
             target="_blank"
@@ -17,7 +17,7 @@ export const SiteFooter = () => {
         </p>
         <div className="flex items-center gap-4">
           <Link
-            className="text-[var(--text-main)] transition-colors hover:text-[var(--accent-bright)]"
+            className="glow-hover text-[var(--text-main)] transition-colors hover:text-[var(--accent-bright)]"
             href="https://github.com/shan8851/agent-skills"
             rel="noopener noreferrer"
             target="_blank"
@@ -25,7 +25,7 @@ export const SiteFooter = () => {
             skills-repo
           </Link>
           <Link
-            className="text-[var(--text-main)] transition-colors hover:text-[var(--accent-bright)]"
+            className="glow-hover text-[var(--text-main)] transition-colors hover:text-[var(--accent-bright)]"
             href="https://x.com/shan8851"
             rel="noopener noreferrer"
             target="_blank"

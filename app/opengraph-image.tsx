@@ -31,8 +31,8 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
         display: "flex",
         padding: "44px",
         background:
-          "radial-gradient(circle at 18% 0%, rgba(84, 255, 140, 0.18), transparent 42%), linear-gradient(160deg, #060d09 0%, #08140d 100%)",
-        color: "#d5f5dc",
+          "radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.04), transparent 42%), linear-gradient(160deg, #050505 0%, #0a0a0a 100%)",
+        color: "#e0e0e0",
         fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace",
       }}
     >
@@ -40,8 +40,8 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
         style={{
           width: "100%",
           height: "100%",
-          border: "1px solid #1f3b2a",
-          background: "#0b1811",
+          border: "1px solid #2a2a2a",
+          background: "#0d0d0d",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -53,7 +53,7 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
             display: "flex",
             justifyContent: "space-between",
             fontSize: 22,
-            color: "#8cb498",
+            color: "#707070",
             letterSpacing: "0.08em",
           }}
         >
@@ -73,13 +73,13 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
           >
             <div
               style={{
-                color: "#8fffaf",
+                color: "#ffffff",
                 fontFamily: "VT323",
                 fontSize: 154,
                 lineHeight: 0.78,
                 letterSpacing: "2px",
                 whiteSpace: "nowrap",
-                textShadow: "4px 4px 0 #1f3b2a",
+                textShadow: "4px 4px 0 #1a1a1a",
               }}
             >
               SHAN SKILLS
@@ -88,13 +88,13 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
             <div
               style={{
                 width: "100%",
-                borderTop: "1px solid #1f3b2a",
+                borderTop: "1px solid #2a2a2a",
               }}
             />
 
             <div
               style={{
-                color: "#d5f5dc",
+                color: "#e0e0e0",
                 fontSize: 46,
                 lineHeight: 1.12,
                 maxWidth: "92%",
@@ -107,8 +107,8 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
           <div
             style={{
               width: "320px",
-              border: "1px solid #1f3b2a",
-              background: "linear-gradient(180deg, rgba(14, 35, 24, 0.95), rgba(10, 24, 17, 0.95))",
+              border: "1px solid #2a2a2a",
+              background: "linear-gradient(180deg, rgba(20, 20, 20, 0.95), rgba(13, 13, 13, 0.95))",
               padding: "18px 16px",
               display: "flex",
               flexDirection: "column",
@@ -117,7 +117,7 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
           >
             <div
               style={{
-                color: "#8fffaf",
+                color: "#ffffff",
                 fontFamily: "VT323",
                 fontSize: 44,
                 lineHeight: 0.85,
@@ -136,14 +136,14 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
                     justifyContent: "space-between",
                     alignItems: "center",
                     gap: "12px",
-                    color: "#d5f5dc",
+                    color: "#e0e0e0",
                     fontSize: 22,
-                    borderTop: "1px solid #1f3b2a",
+                    borderTop: "1px solid #2a2a2a",
                     paddingTop: "8px",
                   }}
                 >
-                  <span style={{ color: "#8fffaf" }}>{shortcut.keys}</span>
-                  <span style={{ color: "#8cb498", textAlign: "right" }}>{shortcut.description}</span>
+                  <span style={{ color: "#ffffff" }}>{shortcut.keys}</span>
+                  <span style={{ color: "#707070", textAlign: "right" }}>{shortcut.description}</span>
                 </div>
               );
             })}
@@ -155,8 +155,8 @@ const OpenGraphImage = async (): Promise<ImageResponse> => {
             display: "flex",
             justifyContent: "space-between",
             fontSize: 24,
-            color: "#8cb498",
-            borderTop: "1px solid #1f3b2a",
+            color: "#707070",
+            borderTop: "1px solid #2a2a2a",
             paddingTop: "14px",
           }}
         >

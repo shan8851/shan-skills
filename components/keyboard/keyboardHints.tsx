@@ -11,7 +11,7 @@ type KeyboardHintsProps = {
 export const KeyboardHints = ({ className, shortcuts }: KeyboardHintsProps) => {
   return (
     <div
-      className={`rounded-lg border border-[var(--ui-border)] bg-[var(--panel-bg-muted)]/70 px-3 py-2 ${
+      className={`border border-[var(--ui-border)] bg-[var(--panel-bg-muted)]/70 px-3 py-2 ${
         className ?? ""
       }`}
     >

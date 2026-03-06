@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Shan Skills icon">
+  <rect width="64" height="64" fill="#000000" />
+  <text
+    x="50%"
+    y="56%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-size="44"
+    font-family="monospace"
+    font-weight="700"
+    fill="#8fffaf"
+  >
+    s
+  </text>
+</svg>

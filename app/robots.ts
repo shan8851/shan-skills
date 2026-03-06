@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://skills.shan8851.com";
+import { buildAbsoluteSiteUrl, siteUrl } from "@/lib/site/siteMetadata";
 
 const robots = (): MetadataRoute.Robots => {
   return {
@@ -8,7 +8,7 @@ const robots = (): MetadataRoute.Robots => {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: buildAbsoluteSiteUrl("/sitemap.xml"),
     host: siteUrl,
   };
 };

@@ -1,7 +1,7 @@
 import type { ResourceDocument, Skill } from "@/lib/skills/skillsSchema";
 
-type BuilderNode = {
-  directories: Record<string, BuilderNode>;
+type ResourceTreeBuilderNode = {
+  directories: Record<string, ResourceTreeBuilderNode>;
   files: ResourceDocument[];
   fullPath: string;
   name: string;
@@ -24,14 +24,19 @@ export type SkillExplorerDirectoryNode = {
   type: "directory";
 };
 
-export type SkillExplorerNode = SkillExplorerFileNode | SkillExplorerDirectoryNode;
+export type SkillExplorerNode =
+  | SkillExplorerFileNode
+  | SkillExplorerDirectoryNode;
 
 export type ExplorerVisibleRow = {
   depth: number;
   node: SkillExplorerNode;
 };
 
-const createBuilderNode = (name: string, fullPath: string): BuilderNode => {
+const createResourceTreeBuilderNode = (
+  name: string,
+  fullPath: string,
+): ResourceTreeBuilderNode => {
   return {
     name,
     fullPath,
@@ -40,12 +45,12 @@ const createBuilderNode = (name: string, fullPath: string): BuilderNode => {
   };
 };
 
-const insertDocument = (
-  node: BuilderNode,
+const insertResourceDocument = (
+  node: ResourceTreeBuilderNode,
   segments: string[],
   document: ResourceDocument,
   parentPath: string,
-): BuilderNode => {
+): ResourceTreeBuilderNode => {
   if (segments.length === 1) {
     return {
       ...node,
@@ -55,8 +60,15 @@ const insertDocument = (
 
   const [directoryName, ...remainingSegments] = segments;
   const childPath = `${parentPath}/${directoryName}`;
-  const existingChild = node.directories[directoryName] ?? createBuilderNode(directoryName, childPath);
-  const updatedChild = insertDocument(existingChild, remainingSegments, document, childPath);
+  const existingChild =
+    node.directories[directoryName] ??
+    createResourceTreeBuilderNode(directoryName, childPath);
+  const updatedChild = insertResourceDocument(
+    existingChild,
+    remainingSegments,
+    document,
+    childPath,
+  );
 
   return {
     ...node,
@@ -67,27 +79,37 @@ const insertDocument = (
   };
 };
 
-const sortNodesByDisplayName = <T extends { displayName: string }>(nodes: T[]): T[] => {
+const sortNodesByDisplayName = <T extends { displayName: string }>(
+  nodes: T[],
+): T[] => {
   return [...nodes].sort((left, right) =>
-    left.displayName.localeCompare(right.displayName, "en", { sensitivity: "base" }),
+    left.displayName.localeCompare(right.displayName, "en", {
+      sensitivity: "base",
+    }),
   );
 };
 
 const getFilenameFromRelativePath = (relativePath: string): string => {
-  const segments = relativePath.split("/").filter((segment) => segment.length > 0);
+  const segments = relativePath
+    .split("/")
+    .filter((segment) => segment.length > 0);
   return segments[segments.length - 1] ?? relativePath;
 };
 
-const toChildExplorerNodes = (builderNode: BuilderNode): SkillExplorerNode[] => {
-  const directoryNodes = Object.values(builderNode.directories).map((childDirectory) => {
-    return {
-      children: toChildExplorerNodes(childDirectory),
-      displayName: childDirectory.name,
-      fullPath: childDirectory.fullPath,
-      id: `dir:${childDirectory.fullPath}`,
-      type: "directory",
-    } satisfies SkillExplorerDirectoryNode;
-  });
+const buildExplorerChildren = (
+  builderNode: ResourceTreeBuilderNode,
+): SkillExplorerNode[] => {
+  const directoryNodes = Object.values(builderNode.directories).map(
+    (childDirectory) => {
+      return {
+        children: buildExplorerChildren(childDirectory),
+        displayName: childDirectory.name,
+        fullPath: childDirectory.fullPath,
+        id: `dir:${childDirectory.fullPath}`,
+        type: "directory",
+      } satisfies SkillExplorerDirectoryNode;
+    },
+  );
 
   const fileNodes = builderNode.files.map((document) => {
     const displayName = getFilenameFromRelativePath(document.relativePath);
@@ -108,18 +130,25 @@ const toChildExplorerNodes = (builderNode: BuilderNode): SkillExplorerNode[] => 
   ];
 };
 
-const buildResourceNodes = (resourceDocuments: ResourceDocument[]): SkillExplorerNode[] => {
-  const rootNode = resourceDocuments.reduce<BuilderNode>((currentRootNode, document) => {
-    const segments = document.relativePath.split("/").filter((segment) => segment.length > 0);
+const buildResourceNodes = (
+  resourceDocuments: ResourceDocument[],
+): SkillExplorerNode[] => {
+  const rootNode = resourceDocuments.reduce<ResourceTreeBuilderNode>(
+    (currentRootNode, document) => {
+      const segments = document.relativePath
+        .split("/")
+        .filter((segment) => segment.length > 0);
 
-    if (segments.length === 0) {
-      return currentRootNode;
-    }
+      if (segments.length === 0) {
+        return currentRootNode;
+      }
 
-    return insertDocument(currentRootNode, segments, document, "");
-  }, createBuilderNode("root", ""));
+      return insertResourceDocument(currentRootNode, segments, document, "");
+    },
+    createResourceTreeBuilderNode("root", ""),
+  );
 
-  return toChildExplorerNodes(rootNode);
+  return buildExplorerChildren(rootNode);
 };
 
 export const buildSkillExplorerNodes = (skill: Skill): SkillExplorerNode[] => {
@@ -155,7 +184,11 @@ export const flattenExplorerRows = (
       return [currentRow];
     }
 
-    const childRows = flattenExplorerRows(node.children, collapsedDirectoryPaths, depth + 1);
+    const childRows = flattenExplorerRows(
+      node.children,
+      collapsedDirectoryPaths,
+      depth + 1,
+    );
     return [currentRow, ...childRows];
   });
 };

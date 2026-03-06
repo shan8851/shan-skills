@@ -1,13 +1,11 @@
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 
 import {
   generatedSkillsDataSchema,
   type GeneratedSkillsData,
   type Skill,
 } from "@/lib/skills/skillsSchema";
-
-const generatedDataPath = join(process.cwd(), "generated", "skillsData.json");
+import { generatedSkillsDataPath } from "@/lib/skills/skillsPaths";
 
 let cachedDataPromise: Promise<GeneratedSkillsData> | null = null;
 
@@ -16,21 +14,27 @@ const parseGeneratedData = (rawJson: string): GeneratedSkillsData => {
   return generatedSkillsDataSchema.parse(parsedJson);
 };
 
+const readGeneratedSkillsData = async (): Promise<GeneratedSkillsData> => {
+  try {
+    const rawJson = await readFile(generatedSkillsDataPath, "utf8");
+    return parseGeneratedData(rawJson);
+  } catch (error: unknown) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+      throw new Error(
+        "generated/skillsData.json is missing. Run `npm run skills:sync` before starting dev/build.",
+      );
+    }
+
+    throw error;
+  }
+};
+
 export const getSkillsData = async (): Promise<GeneratedSkillsData> => {
   if (cachedDataPromise === null) {
-    cachedDataPromise = readFile(generatedDataPath, "utf8")
-      .then(parseGeneratedData)
-      .catch((error: unknown) => {
-        cachedDataPromise = null;
-
-        if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-          throw new Error(
-            "generated/skillsData.json is missing. Run `npm run skills:sync` before starting dev/build.",
-          );
-        }
-
-        throw error;
-      });
+    cachedDataPromise = readGeneratedSkillsData().catch((error: unknown) => {
+      cachedDataPromise = null;
+      throw error;
+    });
   }
 
   return cachedDataPromise;

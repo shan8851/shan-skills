@@ -1,18 +1,28 @@
 import { z } from "zod";
 
-const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const skillIdentifierPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const skillIdentifierSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .regex(skillIdentifierPattern);
 
-export const skillFrontmatterSchema = z.object({
+export const skillSourceFrontmatterSchema = z.object({
   name: z
     .string()
     .trim()
     .min(1, "Frontmatter field `name` is required")
-    .regex(slugPattern, "Frontmatter `name` must be a kebab-case slug"),
+    .regex(
+      skillIdentifierPattern,
+      "Frontmatter `name` must be a kebab-case slug",
+    ),
   description: z
     .string()
     .trim()
     .min(1, "Frontmatter field `description` is required"),
 });
+
+export const skillFrontmatterSchema = skillSourceFrontmatterSchema;
 
 export const resourceDocumentSchema = z.object({
   id: z.string().trim().min(1),
@@ -22,8 +32,8 @@ export const resourceDocumentSchema = z.object({
 });
 
 export const skillSchema = z.object({
-  slug: z.string().trim().min(1).regex(slugPattern),
-  name: z.string().trim().min(1),
+  slug: skillIdentifierSchema,
+  name: skillIdentifierSchema,
   description: z.string().trim().min(1),
   skillMarkdown: z.string(),
   resourceDocuments: z.array(resourceDocumentSchema),
@@ -40,7 +50,10 @@ export const generatedSkillsDataSchema = z.object({
   skills: z.array(skillSchema).min(1),
 });
 
-export type SkillFrontmatter = z.infer<typeof skillFrontmatterSchema>;
+export type SkillSourceFrontmatter = z.infer<
+  typeof skillSourceFrontmatterSchema
+>;
+export type SkillFrontmatter = SkillSourceFrontmatter;
 export type ResourceDocument = z.infer<typeof resourceDocumentSchema>;
 export type Skill = z.infer<typeof skillSchema>;
 export type GeneratedSkillsData = z.infer<typeof generatedSkillsDataSchema>;

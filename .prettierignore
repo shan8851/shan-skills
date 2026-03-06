@@ -1,0 +1,6 @@
+.claude
+.next
+coverage
+generated
+node_modules
+package-lock.json

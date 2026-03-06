@@ -10,12 +10,16 @@ type SkillPageProps = {
   }>;
 };
 
-export const generateStaticParams = async (): Promise<Array<{ slug: string }>> => {
+export const generateStaticParams = async (): Promise<
+  Array<{ slug: string }>
+> => {
   const skills = await getAllSkills();
   return skills.map((skill) => ({ slug: skill.slug }));
 };
 
-export const generateMetadata = async ({ params }: SkillPageProps): Promise<Metadata> => {
+export const generateMetadata = async ({
+  params,
+}: SkillPageProps): Promise<Metadata> => {
   const { slug } = await params;
   const skill = await getSkillBySlug(slug);
 

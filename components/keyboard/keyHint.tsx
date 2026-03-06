@@ -1,6 +1,9 @@
 "use client";
 
-import { getShortcutKeyLabel, type KeyboardShortcut } from "@/lib/keyboard/shortcutTypes";
+import {
+  getShortcutKeyLabel,
+  type KeyboardShortcut,
+} from "@/lib/keyboard/shortcutTypes";
 
 type KeyHintProps = {
   shortcut: KeyboardShortcut;
@@ -18,9 +21,14 @@ export const KeyHint = ({ shortcut }: KeyHintProps) => {
           const keyLabel = getShortcutKeyLabel(key);
 
           return (
-            <div key={`${shortcut.id}-${key}-${index}`} className="flex items-center gap-1">
-              {index > 0 ? <span className="text-[var(--text-dim)]">+</span> : null}
-              <kbd className="rounded border border-[var(--ui-border)] bg-black/40 px-1.5 py-0.5 text-[10px] uppercase tracking-wide">
+            <div
+              key={`${shortcut.id}-${key}-${index}`}
+              className="flex items-center gap-1"
+            >
+              {index > 0 ? (
+                <span className="text-[var(--text-dim)]">+</span>
+              ) : null}
+              <kbd className="rounded border border-[var(--ui-border)] bg-black/40 px-1.5 py-0.5 text-[10px] tracking-wide uppercase">
                 {keyLabel}
               </kbd>
             </div>

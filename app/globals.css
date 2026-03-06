@@ -34,8 +34,16 @@
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.03), transparent 36%),
-    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.04), transparent 40%),
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(255, 255, 255, 0.03),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(255, 255, 255, 0.04),
+      transparent 40%
+    ),
     linear-gradient(160deg, var(--terminal-bg), var(--terminal-bg-secondary));
   color: var(--text-main);
   font-family: var(--font-terminal-mono), monospace;
@@ -64,7 +72,11 @@ body::after {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 50%, var(--vignette-color) 100%);
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 50%,
+    transparent 50%,
+    var(--vignette-color) 100%
+  );
   mix-blend-mode: multiply;
   z-index: 40;
 }
@@ -95,7 +107,9 @@ a {
 /* Glow utilities */
 
 .glow-heading {
-  text-shadow: 0 0 8px var(--glow-color), 0 0 20px var(--glow-color-dim);
+  text-shadow:
+    0 0 8px var(--glow-color),
+    0 0 20px var(--glow-color-dim);
 }
 
 .glow-heading-sm {
@@ -103,60 +117,102 @@ a {
 }
 
 .glow-accent {
-  text-shadow: 0 0 6px var(--glow-color), 0 0 14px var(--glow-color-dim);
+  text-shadow:
+    0 0 6px var(--glow-color),
+    0 0 14px var(--glow-color-dim);
 }
 
 .glow-hover {
   transition: text-shadow 0.2s ease;
 }
 .glow-hover:hover {
-  text-shadow: 0 0 6px var(--glow-color), 0 0 14px var(--glow-color-dim);
+  text-shadow:
+    0 0 6px var(--glow-color),
+    0 0 14px var(--glow-color-dim);
 }
 
 /* Panel glow */
 
 .panel-glow {
-  box-shadow: 0 0 1px var(--glow-color-dim), 0 0 15px var(--glow-color-panel), inset 0 0 30px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 0 1px var(--glow-color-dim),
+    0 0 15px var(--glow-color-panel),
+    inset 0 0 30px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.3s ease;
 }
 .panel-glow:hover {
-  box-shadow: 0 0 1px var(--glow-color), 0 0 20px var(--glow-color-panel), inset 0 0 30px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 1px var(--glow-color),
+    0 0 20px var(--glow-color-panel),
+    inset 0 0 30px rgba(0, 0, 0, 0.15);
 }
 
 /* Skill row hover/selection */
 
 .skill-row {
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .skill-row:hover {
-  box-shadow: inset 2px 0 0 var(--glow-color-dim), 0 0 8px var(--glow-color-panel);
+  box-shadow:
+    inset 2px 0 0 var(--glow-color-dim),
+    0 0 8px var(--glow-color-panel);
 }
 .skill-row-selected {
-  box-shadow: inset 3px 0 0 var(--glow-color), 0 0 12px var(--glow-color-panel);
+  box-shadow:
+    inset 3px 0 0 var(--glow-color),
+    0 0 12px var(--glow-color-panel);
   text-shadow: 0 0 4px var(--glow-color-dim);
 }
 
 /* Keyframe animations */
 
 @keyframes terminalFlickerIn {
-  0% { opacity: 0; }
-  10% { opacity: 0.6; }
-  15% { opacity: 0.2; }
-  30% { opacity: 0.8; }
-  40% { opacity: 0.4; }
-  60% { opacity: 0.9; }
-  80% { opacity: 0.7; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  15% {
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.4;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes terminalFadeIn {
-  0% { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scanlineDrift {
-  0% { background-position-y: 0; }
-  100% { background-position-y: 2.5px; }
+  0% {
+    background-position-y: 0;
+  }
+  100% {
+    background-position-y: 2.5px;
+  }
 }
 
 .terminal-flicker-in {
@@ -176,11 +232,22 @@ a {
 }
 
 .terminal-input:focus:placeholder-shown {
-  box-shadow: 0 0 8px var(--glow-color-dim), inset -2px 0 0 var(--accent);
+  box-shadow:
+    0 0 8px var(--glow-color-dim),
+    inset -2px 0 0 var(--accent);
   animation: cursorBlink 1s step-end infinite;
 }
 
 @keyframes cursorBlink {
-  0%, 100% { box-shadow: 0 0 8px var(--glow-color-dim), inset -2px 0 0 var(--accent); }
-  50% { box-shadow: 0 0 8px var(--glow-color-dim), inset -2px 0 0 transparent; }
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px var(--glow-color-dim),
+      inset -2px 0 0 var(--accent);
+  }
+  50% {
+    box-shadow:
+      0 0 8px var(--glow-color-dim),
+      inset -2px 0 0 transparent;
+  }
 }

@@ -1,8 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { getAllSkills } from "@/lib/skills/skillsData";
-
-const siteUrl = "https://skills.shan8851.com";
+import {
+  buildAbsoluteSiteUrl,
+  buildSkillPath,
+  siteUrl,
+} from "@/lib/site/siteMetadata";
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   const skills = await getAllSkills();
@@ -18,7 +21,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
   const skillEntries: MetadataRoute.Sitemap = skills.map((skill) => {
     return {
-      url: `${siteUrl}/skills/${skill.slug}`,
+      url: buildAbsoluteSiteUrl(buildSkillPath(skill.slug)),
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,

@@ -1,103 +1,76 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-
 import { ImageResponse } from "next/og";
 
 import { getSkillBySlug } from "@/lib/skills/skillsData";
+import {
+  createOpenGraphCanvasStyle,
+  createOpenGraphDisplayTitleStyle,
+  createOpenGraphOptions,
+  openGraphAlt,
+  openGraphContentType,
+  openGraphDividerStyle,
+  openGraphFooterRowStyle,
+  openGraphFrameStyle,
+  openGraphHeaderRowStyle,
+  openGraphPalette,
+  openGraphStatsChipStyle,
+  selectFontSizeByCharacterCount,
+  truncateText,
+} from "@/lib/og/ogShared";
+import {
+  openGraphImageSize,
+  siteCreatorHandle,
+  siteUrl,
+} from "@/lib/site/siteMetadata";
 
-export const alt = "Shan Skills";
-export const size = {
-  width: 1200,
-  height: 630,
-};
-export const contentType = "image/png";
+export const alt = openGraphAlt;
+export const size = openGraphImageSize;
+export const contentType = openGraphContentType;
 export const runtime = "nodejs";
 
 type SkillOgImageProps = {
   params: Promise<{ slug: string }>;
 };
 
-const vt323FontPath = join(process.cwd(), "public", "fonts", "vt323Regular.ttf");
+const skillTitleFontSizeTiers = [
+  { maxCharacters: 12, fontSize: 148 },
+  { maxCharacters: 18, fontSize: 132 },
+  { maxCharacters: 26, fontSize: 114 },
+  { maxCharacters: 34, fontSize: 92 },
+] as const;
+const fallbackSkillTitleFontSize = 78;
+const skillDescriptionMaxLength = 180;
 
-const truncateText = (value: string, maxLength: number): string => {
-  if (value.length <= maxLength) {
-    return value;
-  }
-
-  return `${value.slice(0, maxLength - 1)}…`;
-};
-
-const getTitleFontSize = (characterCount: number): number => {
-  if (characterCount <= 12) {
-    return 148;
-  }
-
-  if (characterCount <= 18) {
-    return 132;
-  }
-
-  if (characterCount <= 26) {
-    return 114;
-  }
-
-  if (characterCount <= 34) {
-    return 92;
-  }
-
-  return 78;
-};
-
-const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<ImageResponse> => {
-  const vt323FontData = await readFile(vt323FontPath);
+const SkillOpenGraphImage = async ({
+  params,
+}: SkillOgImageProps): Promise<ImageResponse> => {
+  const imageOptions = await createOpenGraphOptions();
 
   const { slug } = await params;
   const skill = await getSkillBySlug(slug);
 
   const skillTitle = (skill?.name ?? slug).toUpperCase();
-  const titleFontSize = getTitleFontSize(skillTitle.length);
+  const titleFontSize = selectFontSizeByCharacterCount(
+    skillTitle.length,
+    [...skillTitleFontSizeTiers],
+    fallbackSkillTitleFontSize,
+  );
   const description = truncateText(
     skill?.description ?? "Skill page for Shan Skills.",
-    180,
+    skillDescriptionMaxLength,
   );
   const resourceCount = skill?.resourceDocuments.length ?? 0;
   const fileCount = resourceCount + 1;
 
   return new ImageResponse(
     <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        padding: "44px",
-        background:
-          "radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.04), transparent 40%), linear-gradient(160deg, #050505 0%, #0a0a0a 100%)",
-        color: "#e0e0e0",
-        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace",
-      }}
+      style={createOpenGraphCanvasStyle(
+        "radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.04), transparent 40%), linear-gradient(160deg, #050505 0%, #0a0a0a 100%)",
+      )}
     >
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          border: "1px solid #2a2a2a",
-          background: "#0d0d0d",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "30px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 22,
-            color: "#707070",
-            letterSpacing: "0.08em",
-          }}
-        >
+      <div style={openGraphFrameStyle}>
+        <div style={openGraphHeaderRowStyle}>
           <span>SHAN SKILLS // SKILL CARD</span>
-          <span>skills.shan8851.com</span>
+          <span>{siteUrl.replace("https://", "")}</span>
         </div>
 
         <div
@@ -112,7 +85,7 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
         >
           <div
             style={{
-              color: "#707070",
+              color: openGraphPalette.muted,
               fontSize: 24,
               letterSpacing: "0.08em",
             }}
@@ -122,29 +95,19 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
 
           <div
             style={{
-              color: "#ffffff",
-              fontFamily: "VT323",
-              fontSize: titleFontSize,
-              lineHeight: 0.8,
-              letterSpacing: "2px",
-              whiteSpace: "normal",
-              textShadow: "4px 4px 0 #1a1a1a",
+              ...createOpenGraphDisplayTitleStyle(titleFontSize),
               maxWidth: "100%",
+              whiteSpace: "normal",
             }}
           >
             {skillTitle}
           </div>
 
-          <div
-            style={{
-              width: "100%",
-              borderTop: "1px solid #2a2a2a",
-            }}
-          />
+          <div style={openGraphDividerStyle} />
 
           <div
             style={{
-              color: "#e0e0e0",
+              color: openGraphPalette.text,
               fontSize: 43,
               lineHeight: 1.08,
               maxWidth: "96%",
@@ -162,12 +125,8 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
           >
             <div
               style={{
-                border: "1px solid #2a2a2a",
-                background: "#141414",
-                color: "#ffffff",
-                padding: "8px 12px",
-                fontSize: 20,
-                letterSpacing: "0.05em",
+                ...openGraphStatsChipStyle,
+                color: openGraphPalette.accent,
               }}
             >
               {`FILES ${fileCount}`}
@@ -175,12 +134,8 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
 
             <div
               style={{
-                border: "1px solid #2a2a2a",
-                background: "#141414",
-                color: "#707070",
-                padding: "8px 12px",
-                fontSize: 20,
-                letterSpacing: "0.05em",
+                ...openGraphStatsChipStyle,
+                color: openGraphPalette.muted,
               }}
             >
               {`RESOURCES ${resourceCount}`}
@@ -188,25 +143,13 @@ const SkillOpenGraphImage = async ({ params }: SkillOgImageProps): Promise<Image
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 24,
-            color: "#707070",
-            borderTop: "1px solid #2a2a2a",
-            paddingTop: "14px",
-          }}
-        >
+        <div style={openGraphFooterRowStyle}>
           <span>{`/${slug}`}</span>
-          <span>@shan8851</span>
+          <span>{siteCreatorHandle}</span>
         </div>
       </div>
     </div>,
-    {
-      ...size,
-      fonts: [{ name: "VT323", data: vt323FontData, style: "normal", weight: 400 }],
-    },
+    imageOptions,
   );
 };
 

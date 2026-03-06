@@ -1,9 +1,6 @@
 # Shan Skills Site
 
-Terminal-style site for browsing the custom skills I use with coding agents.
-
-## Live URL
-- `https://skills.shan8851.com` (coming soon)
+Terminal-style site for browsing the custom skills I use with coding agents. Check it out [here](https://skills.shan8851.com)
 
 ## What This Site Does
 - Shows a searchable list of skills on the home page.

@@ -7,6 +7,8 @@ const skillIdentifierSchema = z
   .min(1)
   .regex(skillIdentifierPattern);
 
+const skillCategorySchema = z.enum(["workflow", "cli-tool"]).optional();
+
 export const skillSourceFrontmatterSchema = z.object({
   name: z
     .string()
@@ -20,6 +22,8 @@ export const skillSourceFrontmatterSchema = z.object({
     .string()
     .trim()
     .min(1, "Frontmatter field `description` is required"),
+  category: skillCategorySchema,
+  clawhubUrl: z.string().url().optional(),
 });
 
 export const skillFrontmatterSchema = skillSourceFrontmatterSchema;
@@ -35,6 +39,8 @@ export const skillSchema = z.object({
   slug: skillIdentifierSchema,
   name: skillIdentifierSchema,
   description: z.string().trim().min(1),
+  category: skillCategorySchema,
+  clawhubUrl: z.string().url().optional(),
   skillMarkdown: z.string(),
   resourceDocuments: z.array(resourceDocumentSchema),
 });

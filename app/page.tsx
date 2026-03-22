@@ -8,6 +8,8 @@ const HomePage = async () => {
       description: skill.description,
       name: skill.name,
       slug: skill.slug,
+      category: skill.category,
+      clawhubUrl: skill.clawhubUrl,
     };
   });
 

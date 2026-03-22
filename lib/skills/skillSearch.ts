@@ -1,6 +1,9 @@
 import type { Skill } from "@/lib/skills/skillsSchema";
 
-export type SkillSummary = Pick<Skill, "description" | "name" | "slug">;
+export type SkillSummary = Pick<
+  Skill,
+  "description" | "name" | "slug" | "category" | "clawhubUrl"
+>;
 
 export const filterSkillsByQuery = (
   skills: SkillSummary[],
@@ -13,8 +16,9 @@ export const filterSkillsByQuery = (
   }
 
   return skills.filter((skill) => {
+    const categoryLabel = skill.category === "cli-tool" ? "cli tool" : "workflow";
     const searchableText =
-      `${skill.slug} ${skill.name} ${skill.description}`.toLowerCase();
+      `${skill.slug} ${skill.name} ${skill.description} ${categoryLabel}`.toLowerCase();
     return searchableText.includes(normalizedQuery);
   });
 };

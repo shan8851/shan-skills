@@ -9,6 +9,24 @@ type SkillListProps = {
   selectedIndex: number;
 };
 
+const categoryLabel = (
+  category: SkillSummary["category"],
+): { text: string; className: string } => {
+  if (category === "cli-tool") {
+    return {
+      text: "CLI TOOL",
+      className:
+        "border-cyan-700/50 bg-cyan-950/40 text-cyan-400",
+    };
+  }
+
+  return {
+    text: "WORKFLOW",
+    className:
+      "border-violet-700/50 bg-violet-950/40 text-violet-400",
+  };
+};
+
 export const SkillList = ({
   filteredSkills,
   selectedIndex,
@@ -26,6 +44,7 @@ export const SkillList = ({
         <ul aria-label="Skills list">
           {filteredSkills.map((skill, index) => {
             const isSelected = index === selectedIndex;
+            const badge = categoryLabel(skill.category);
 
             return (
               <li
@@ -53,9 +72,30 @@ export const SkillList = ({
                   type="button"
                 >
                   <div className="min-w-0">
-                    <p className="font-display truncate text-sm tracking-[0.06em] uppercase">
-                      {skill.name}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-display truncate text-sm tracking-[0.06em] uppercase">
+                        {skill.name}
+                      </p>
+                      <span
+                        className={`font-display shrink-0 border px-1.5 py-0.5 text-[10px] leading-none tracking-[0.1em] ${badge.className}`}
+                      >
+                        {badge.text}
+                      </span>
+                      {skill.clawhubUrl ? (
+                        <a
+                          href={skill.clawhubUrl}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 text-sm opacity-70 transition-opacity hover:opacity-100"
+                          title="View on ClawHub"
+                        >
+                          🦞
+                        </a>
+                      ) : null}
+                    </div>
                     <p className="mt-1 line-clamp-2 text-xs text-(--text-dim)">
                       {skill.description}
                     </p>

@@ -101,7 +101,12 @@ const getSkillSlugs = async (
 const parseSourceSkillDocument = (
   skillSlug: string,
   rawSkillMarkdown: string,
-): { description: string; markdownBody: string } => {
+): {
+  description: string;
+  category?: "workflow" | "cli-tool";
+  clawhubUrl?: string;
+  markdownBody: string;
+} => {
   const parsedSkillDocument = matter(rawSkillMarkdown);
   const parsedFrontmatter = skillSourceFrontmatterSchema.parse(
     parsedSkillDocument.data,
@@ -116,6 +121,8 @@ const parseSourceSkillDocument = (
 
   return {
     description: parsedFrontmatter.description,
+    category: parsedFrontmatter.category,
+    clawhubUrl: parsedFrontmatter.clawhubUrl,
     markdownBody: parsedSkillDocument.content,
   };
 };
@@ -180,6 +187,8 @@ const buildSkillRecord = async (
     slug: skillSlug,
     name: skillSlug,
     description: parsedSkillDocument.description,
+    category: parsedSkillDocument.category,
+    clawhubUrl: parsedSkillDocument.clawhubUrl,
     skillMarkdown: parsedSkillDocument.markdownBody,
     resourceDocuments,
   };

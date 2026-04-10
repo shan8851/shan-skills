@@ -79,23 +79,40 @@ const listMarkdownFilePaths = async (
 
 const getSkillSlugs = async (
   repositoryRootDirectory: string,
-): Promise<string[]> => {
+): Promise<Array<{ category: string; slug: string }>> => {
   const skillsDirectoryPath = join(
     repositoryRootDirectory,
     sourceSkillsRootPath,
   );
-  const entries = await readdir(skillsDirectoryPath, { withFileTypes: true });
+  const categoryEntries = await readdir(skillsDirectoryPath, {
+    withFileTypes: true,
+  });
 
-  const skillSlugs = entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort((left, right) => left.localeCompare(right));
+  const skillEntries: Array<{ category: string; slug: string }> = [];
 
-  if (skillSlugs.length === 0) {
+  for (const categoryEntry of categoryEntries) {
+    if (!categoryEntry.isDirectory()) continue;
+
+    const category = categoryEntry.name;
+    const categoryPath = join(skillsDirectoryPath, category);
+    const slugEntries = await readdir(categoryPath, { withFileTypes: true });
+
+    for (const slugEntry of slugEntries) {
+      if (slugEntry.isDirectory()) {
+        skillEntries.push({ category, slug: slugEntry.name });
+      }
+    }
+  }
+
+  if (skillEntries.length === 0) {
     throw new Error("No skill directories found in source repository");
   }
 
-  return skillSlugs;
+  return skillEntries.sort((left, right) => {
+    const categoryCompare = left.category.localeCompare(right.category);
+    if (categoryCompare !== 0) return categoryCompare;
+    return left.slug.localeCompare(right.slug);
+  });
 };
 
 const parseSourceSkillDocument = (
@@ -103,7 +120,6 @@ const parseSourceSkillDocument = (
   rawSkillMarkdown: string,
 ): {
   description: string;
-  category?: "workflow" | "cli-tool";
   clawhubUrl?: string;
   markdownBody: string;
 } => {
@@ -121,7 +137,6 @@ const parseSourceSkillDocument = (
 
   return {
     description: parsedFrontmatter.description,
-    category: parsedFrontmatter.category,
     clawhubUrl: parsedFrontmatter.clawhubUrl,
     markdownBody: parsedSkillDocument.content,
   };
@@ -157,10 +172,12 @@ const buildResourceDocuments = async (
 const buildSkillRecord = async (
   repositoryRootDirectory: string,
   skillSlug: string,
+  category: string,
 ): Promise<Skill> => {
   const skillDirectoryPath = join(
     repositoryRootDirectory,
     sourceSkillsRootPath,
+    category,
     skillSlug,
   );
   const markdownFilePaths = await listMarkdownFilePaths(skillDirectoryPath);
@@ -168,7 +185,7 @@ const buildSkillRecord = async (
 
   if (!markdownFilePaths.includes(skillDocumentPath)) {
     throw new Error(
-      `Missing ${sourceSkillDocumentName} in '${sourceSkillsRootPath}/${skillSlug}'`,
+      `Missing ${sourceSkillDocumentName} in '${sourceSkillsRootPath}/${category}/${skillSlug}'`,
     );
   }
 
@@ -187,7 +204,7 @@ const buildSkillRecord = async (
     slug: skillSlug,
     name: skillSlug,
     description: parsedSkillDocument.description,
-    category: parsedSkillDocument.category,
+    category,
     clawhubUrl: parsedSkillDocument.clawhubUrl,
     skillMarkdown: parsedSkillDocument.markdownBody,
     resourceDocuments,
@@ -238,10 +255,10 @@ export const buildGeneratedSkillsData =
       await cloneSourceRepository();
 
     try {
-      const skillSlugs = await getSkillSlugs(repositoryRootDirectory);
+      const skillEntries = await getSkillSlugs(repositoryRootDirectory);
       const skills = await Promise.all(
-        skillSlugs.map((skillSlug) =>
-          buildSkillRecord(repositoryRootDirectory, skillSlug),
+        skillEntries.map(({ category, slug }) =>
+          buildSkillRecord(repositoryRootDirectory, slug, category),
         ),
       );
 

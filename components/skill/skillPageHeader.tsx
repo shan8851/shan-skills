@@ -4,16 +4,23 @@ import { TerminalPanel } from "@/components/ui/terminalPanel";
 
 type SkillPageHeaderProps = {
   skillName: string;
-  category?: "workflow" | "cli-tool";
+  category: string;
   clawhubUrl?: string;
 };
 
 const categoryLabel = (
   category: SkillPageHeaderProps["category"],
 ): { text: string; className: string } => {
-  if (category === "cli-tool") {
+  if (category === "software-engineering") {
     return {
-      text: "CLI TOOL",
+      text: "SOFTWARE ENGINEERING",
+      className: "border-amber-700/50 bg-amber-950/40 text-amber-400",
+    };
+  }
+
+  if (category === "cli-tools") {
+    return {
+      text: "CLI TOOLS",
       className: "border-cyan-700/50 bg-cyan-950/40 text-cyan-400",
     };
   }

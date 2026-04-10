@@ -7,8 +7,6 @@ const skillIdentifierSchema = z
   .min(1)
   .regex(skillIdentifierPattern);
 
-const skillCategorySchema = z.enum(["workflow", "cli-tool"]).optional();
-
 export const skillSourceFrontmatterSchema = z.object({
   name: z
     .string()
@@ -22,11 +20,14 @@ export const skillSourceFrontmatterSchema = z.object({
     .string()
     .trim()
     .min(1, "Frontmatter field `description` is required"),
-  category: skillCategorySchema,
   clawhubUrl: z.string().url().optional(),
 });
 
-export const skillFrontmatterSchema = skillSourceFrontmatterSchema;
+const skillCategorySchema = z.string().trim().min(1);
+
+export const skillFrontmatterSchema = skillSourceFrontmatterSchema.extend({
+  category: skillCategorySchema,
+});
 
 export const resourceDocumentSchema = z.object({
   id: z.string().trim().min(1),
@@ -59,7 +60,7 @@ export const generatedSkillsDataSchema = z.object({
 export type SkillSourceFrontmatter = z.infer<
   typeof skillSourceFrontmatterSchema
 >;
-export type SkillFrontmatter = SkillSourceFrontmatter;
+export type SkillFrontmatter = z.infer<typeof skillFrontmatterSchema>;
 export type ResourceDocument = z.infer<typeof resourceDocumentSchema>;
 export type Skill = z.infer<typeof skillSchema>;
 export type GeneratedSkillsData = z.infer<typeof generatedSkillsDataSchema>;

@@ -17,6 +17,7 @@ Terminal-style site for browsing the custom skills I use with coding agents. Che
 - **[rail-cli](https://github.com/shan8851/rail-cli)** — UK National Rail: live departures, arrivals, station search, batch search.
 - **[fuel-cli](https://github.com/shan8851/fuel-cli)** — UK fuel prices: nearby stations by postcode or coordinates, ranked by price/distance/freshness.
 - **[companies-house-cli](https://github.com/shan8851/companies-house-cli)** — UK Companies House: search, profiles, officers, filings, PSC, charges, insolvency. [ClawHub](https://clawhub.ai/shan8851/companies-house-cli)
+- **[parliament-cli](https://github.com/shan8851/parliament-cli)** — UK Parliament: bills, members, divisions, votes, and written questions. [ClawHub](https://clawhub.ai/shan8851/parliament-cli)
 
 ### Agent Workflows
 

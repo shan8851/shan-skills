@@ -17,11 +17,12 @@ export const filterSkillsByQuery = (
 
   return skills.filter((skill) => {
     const categoryLabels: Record<string, string> = {
-      "workflow": "workflow",
+      workflow: "workflow",
       "software-engineering": "software engineering",
       "cli-tools": "cli tools",
     };
-    const categoryLabel = categoryLabels[skill.category ?? ""] ?? skill.category ?? "";
+    const categoryLabel =
+      categoryLabels[skill.category ?? ""] ?? skill.category ?? "";
     const searchableText =
       `${skill.slug} ${skill.name} ${skill.description} ${categoryLabel}`.toLowerCase();
     return searchableText.includes(normalizedQuery);

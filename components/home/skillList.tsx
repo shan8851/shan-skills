@@ -15,23 +15,20 @@ const categoryLabel = (
   if (category === "software-engineering") {
     return {
       text: "SOFTWARE ENGINEERING",
-      className:
-        "border-amber-700/50 bg-amber-950/40 text-amber-400",
+      className: "border-amber-700/50 bg-amber-950/40 text-amber-400",
     };
   }
 
   if (category === "cli-tools") {
     return {
       text: "CLI TOOLS",
-      className:
-        "border-cyan-700/50 bg-cyan-950/40 text-cyan-400",
+      className: "border-cyan-700/50 bg-cyan-950/40 text-cyan-400",
     };
   }
 
   return {
     text: "WORKFLOW",
-    className:
-      "border-violet-700/50 bg-violet-950/40 text-violet-400",
+    className: "border-violet-700/50 bg-violet-950/40 text-violet-400",
   };
 };
 

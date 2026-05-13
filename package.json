@@ -2,10 +2,11 @@
   "name": "shan-skills-site",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.23.0",
   "scripts": {
     "dev": "next dev",
     "skills:sync": "tsx scripts/syncSkills.ts",
-    "build": "npm run skills:sync && next build",
+    "build": "pnpm skills:sync && next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",

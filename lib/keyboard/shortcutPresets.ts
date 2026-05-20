@@ -27,6 +27,18 @@ export const createHomeShortcuts = ({
       enabled: true,
     },
     {
+      id: "filter-category-cycle",
+      keys: ["[", "]"],
+      description: "Cycle category filter",
+      enabled: true,
+    },
+    {
+      id: "filter-category-jump",
+      keys: ["0-9"],
+      description: "Jump category filter",
+      enabled: true,
+    },
+    {
       id: "move-selection",
       keys: ["ArrowUp", "ArrowDown"],
       description: "Move selection",

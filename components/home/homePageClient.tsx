@@ -3,6 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
+import {
+  CategoryFilter,
+  type CategoryFilterOption,
+} from "@/components/home/categoryFilter";
 import { HomeHero } from "@/components/home/homeHero";
 import { SkillList } from "@/components/home/skillList";
 import { SkillSearchInput } from "@/components/home/skillSearchInput";
@@ -13,6 +17,11 @@ import { TerminalPanel } from "@/components/ui/terminalPanel";
 import { useWindowKeydown } from "@/hooks/useWindowKeydown";
 import { isTypingElement } from "@/lib/keyboard/keyboardGuards";
 import { createHomeShortcuts } from "@/lib/keyboard/shortcutPresets";
+import {
+  allCategoriesFilterValue,
+  getSkillCategories,
+  type CategoryFilterValue,
+} from "@/lib/skills/skillCategories";
 import {
   filterSkillsByQuery,
   type SkillSummary,
@@ -30,14 +39,37 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilterValue>(
+    allCategoriesFilterValue,
+  );
   const [selectedSkillSlug, setSelectedSkillSlug] = useState(
     skills[0]?.slug ?? "",
   );
   const [isKeyboardHelpOpen, setIsKeyboardHelpOpen] = useState(false);
 
+  const categories = useMemo(() => getSkillCategories(skills), [skills]);
+
+  const categoryOptions = useMemo<CategoryFilterOption[]>(() => {
+    return [
+      { count: skills.length, value: allCategoriesFilterValue },
+      ...categories.map((category) => ({
+        count: skills.filter((skill) => skill.category === category).length,
+        value: category,
+      })),
+    ];
+  }, [categories, skills]);
+
+  const skillsInSelectedCategory = useMemo(() => {
+    if (selectedCategory === allCategoriesFilterValue) {
+      return skills;
+    }
+
+    return skills.filter((skill) => skill.category === selectedCategory);
+  }, [selectedCategory, skills]);
+
   const filteredSkills = useMemo(() => {
-    return filterSkillsByQuery(skills, searchQuery);
-  }, [searchQuery, skills]);
+    return filterSkillsByQuery(skillsInSelectedCategory, searchQuery);
+  }, [searchQuery, skillsInSelectedCategory]);
 
   const homeShortcuts = useMemo(() => {
     return createHomeShortcuts({
@@ -51,6 +83,20 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
       (skill) => skill.slug === selectedSkillSlug,
     );
   }, [filteredSkills, selectedSkillSlug]);
+
+  const selectCategoryByOffset = (offset: number) => {
+    const selectedCategoryIndex = categoryOptions.findIndex(
+      (option) => option.value === selectedCategory,
+    );
+    const nextCategory =
+      categoryOptions[
+        getWrappedIndex(selectedCategoryIndex + offset, categoryOptions.length)
+      ];
+
+    if (nextCategory !== undefined) {
+      setSelectedCategory(nextCategory.value);
+    }
+  };
 
   useWindowKeydown((event) => {
     if (isKeyboardHelpOpen) {
@@ -83,6 +129,30 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
     if (!isTyping && isPlainKeyboardShortcut && event.key === "?") {
       event.preventDefault();
       setIsKeyboardHelpOpen(true);
+      return;
+    }
+
+    if (!isTyping && isPlainKeyboardShortcut && event.key === "[") {
+      event.preventDefault();
+      selectCategoryByOffset(-1);
+      return;
+    }
+
+    if (!isTyping && isPlainKeyboardShortcut && event.key === "]") {
+      event.preventDefault();
+      selectCategoryByOffset(1);
+      return;
+    }
+
+    if (!isTyping && isPlainKeyboardShortcut && /^\d$/.test(event.key)) {
+      const optionIndex = Number(event.key);
+      const nextCategory = categoryOptions[optionIndex];
+
+      if (nextCategory !== undefined) {
+        event.preventDefault();
+        setSelectedCategory(nextCategory.value);
+      }
+
       return;
     }
 
@@ -144,6 +214,11 @@ export const HomePageClient = ({ skills }: HomePageClientProps) => {
               inputRef={searchInputRef}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
+            />
+            <CategoryFilter
+              options={categoryOptions}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
             />
             <KeyboardHints className="mt-3" shortcuts={homeShortcuts} />
             <SkillList

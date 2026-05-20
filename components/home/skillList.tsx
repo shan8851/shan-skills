@@ -2,34 +2,12 @@
 
 import { useRouter } from "next/navigation";
 
+import { getCategoryDisplay } from "@/lib/skills/skillCategories";
 import type { SkillSummary } from "@/lib/skills/skillSearch";
 
 type SkillListProps = {
   filteredSkills: SkillSummary[];
   selectedIndex: number;
-};
-
-const categoryLabel = (
-  category: SkillSummary["category"],
-): { text: string; className: string } => {
-  if (category === "software-engineering") {
-    return {
-      text: "SOFTWARE ENGINEERING",
-      className: "border-amber-700/50 bg-amber-950/40 text-amber-400",
-    };
-  }
-
-  if (category === "cli-tools") {
-    return {
-      text: "CLI TOOLS",
-      className: "border-cyan-700/50 bg-cyan-950/40 text-cyan-400",
-    };
-  }
-
-  return {
-    text: "WORKFLOW",
-    className: "border-violet-700/50 bg-violet-950/40 text-violet-400",
-  };
 };
 
 export const SkillList = ({
@@ -49,7 +27,7 @@ export const SkillList = ({
         <ul aria-label="Skills list">
           {filteredSkills.map((skill, index) => {
             const isSelected = index === selectedIndex;
-            const badge = categoryLabel(skill.category);
+            const badge = getCategoryDisplay(skill.category);
 
             return (
               <li
@@ -66,7 +44,7 @@ export const SkillList = ({
                 }
               >
                 <button
-                  className={`skill-row grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-(--ui-border-muted) px-3 py-3 text-left last:border-b-0 ${
+                  className={`skill-row grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-(--ui-border-muted) px-3 py-4 text-left last:border-b-0 ${
                     isSelected
                       ? "skill-row-selected bg-(--selection-bg) text-(--accent-bright)"
                       : "bg-transparent text-foreground hover:bg-(--panel-bg-muted)"
@@ -78,11 +56,11 @@ export const SkillList = ({
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-display truncate text-sm tracking-[0.06em] uppercase">
+                      <p className="font-display truncate text-base tracking-[0.055em] uppercase">
                         {skill.name}
                       </p>
                       <span
-                        className={`font-display shrink-0 border px-1.5 py-0.5 text-[10px] leading-none tracking-[0.1em] ${badge.className}`}
+                        className={`font-display shrink-0 border px-2 py-1 text-xs leading-none tracking-[0.08em] ${badge.className}`}
                       >
                         {badge.text}
                       </span>
@@ -101,11 +79,11 @@ export const SkillList = ({
                         </a>
                       ) : null}
                     </div>
-                    <p className="mt-1 line-clamp-2 text-xs text-(--text-dim)">
+                    <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-(--text-dim)">
                       {skill.description}
                     </p>
                   </div>
-                  <span className="font-display self-start border border-(--ui-border) bg-black/25 px-2 py-1 text-xs tracking-wide text-(--text-dim)">
+                  <span className="font-display self-start border border-(--ui-border) bg-black/25 px-2.5 py-1.5 text-[13px] tracking-wide text-(--text-dim)">
                     {skill.slug}
                   </span>
                 </button>

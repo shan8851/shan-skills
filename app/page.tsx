@@ -1,19 +1,12 @@
-import { HomePageClient } from "@/components/home/homePageClient";
-import { getAllSkills } from "@/lib/skills/skillsData";
-
-const HomePage = async () => {
-  const skills = await getAllSkills();
-  const skillSummaries = skills.map((skill) => {
-    return {
-      description: skill.description,
-      name: skill.name,
-      slug: skill.slug,
-      category: skill.category,
-      clawhubUrl: skill.clawhubUrl,
-    };
-  });
-
-  return <HomePageClient skills={skillSummaries} />;
-};
-
-export default HomePage;
+// Retired. next.config.ts redirects every request to the main site;
+// this page only exists as a fallback.
+export default function Page() {
+  return (
+    <main style={{ padding: "4rem 1.5rem", fontFamily: "system-ui, sans-serif" }}>
+      <p>
+        Skills have moved to{" "}
+        <a href="https://www.shan8851.com/skills">shan8851.com/skills</a>.
+      </p>
+    </main>
+  );
+}
